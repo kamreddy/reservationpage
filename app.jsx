@@ -1,87 +1,68 @@
-let seatsLeft = 10; // Total seats in the restaurant
-const reservationForm = document.getElementById('reservation-form');
-const reservationTable = document.getElementById('reservation-table').getElementsByTagName('tbody')[0];
-const seatsLeftElement = document.getElementById('seats-left');
-const reservations = [];
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-// Handle form submission to reserve a table
-reservationForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
 
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const guests = parseInt(document.getElementById('guests').value);
-
-    if (guests > seatsLeft) {
-        alert("Not enough seats available!");
-        return;
-    }
-
-    // Check for duplicate reservations by name
-    if (reservations.some(r => r.name === name)) {
-        alert("This name is already reserved!");
-        return;
-    }
-
-    const reservation = {
-        name,
-        phone,
-        guests,
-        checkInTime: new Date().toLocaleString(),
-        checkedOut: false
-    };
-
-    reservations.push(reservation);
-    seatsLeft -= guests; // Decrease available seats
-    updateSeats();
-    renderReservations(); // Update the reservation table
-    reservationForm.reset();
-});
-
-// Update available seats display
-function updateSeats() {
-    seatsLeftElement.textContent = seatsLeft;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-// Render all the current reservations in the table
-function renderReservations() {
-    reservationTable.innerHTML = '';
-    reservations.forEach((reservation, index) => {
-        const row = reservationTable.insertRow();
-        row.insertCell(0).textContent = reservation.name;
-        row.insertCell(1).textContent = reservation.phone;
-        row.insertCell(2).textContent = reservation.checkInTime;
-
-        const checkoutButton = document.createElement('button');
-        checkoutButton.textContent = reservation.checkedOut ? 'Checked Out' : 'Click to Checkout';
-        checkoutButton.disabled = reservation.checkedOut;
-        checkoutButton.onclick = () => checkoutReservation(index);
-        row.insertCell(3).appendChild(checkoutButton);
-
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.classList.add('delete');
-        deleteButton.onclick = () => deleteReservation(index);
-        row.insertCell(4).appendChild(deleteButton);
-    });
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
 }
 
-// Checkout the reservation, log checkout time and update seats
-function checkoutReservation(index) {
-    const reservation = reservations[index];
-    reservation.checkedOut = true;
-    seatsLeft += reservation.guests; // Add back the guests to available seats
-    updateSeats();
-    renderReservations();
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
-// Delete a reservation and adjust available seats accordingly
-function deleteReservation(index) {
-    const reservation = reservations[index];
-    if (!reservation.checkedOut) {
-        seatsLeft += reservation.guests; // If not checked out, add guests back to seats
-    }
-    reservations.splice(index, 1);
-    updateSeats();
-    renderReservations();
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
 }
